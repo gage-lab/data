@@ -81,7 +81,7 @@ rule reads:
     shell:
         """
         samtools view -b -s{params.seed}.2 {input[0]} chr{wildcards.chrom} > {output.bam}
-        samtools fastq -1 {output.fq1} -2 {output.fq2} {output.bam}
+        samtools fastq -1 {output.fq1} -2 {output.fq2} -0 /dev/null -s /dev/null {output.bam}
         """
 
 
