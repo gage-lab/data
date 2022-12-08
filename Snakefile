@@ -98,6 +98,6 @@ rule all:
         ),
         expand(
             rules.reads.output,
-            sample=["a", "b"],
+            sample=["a", "b", "c", "d", "e"],
             chrom=21,
         ),
