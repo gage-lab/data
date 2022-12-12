@@ -8,7 +8,7 @@ HTTP = HTTP.RemoteProvider()
 rule txome_gtf:
     input:
         FTP.remote(
-            "ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_32/gencode.v32.basic.annotation.gtf.gz",
+            "ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_42/gencode.v42.basic.annotation.gtf.gz",
             static=True,
         ),
     output:
@@ -44,7 +44,7 @@ rule genome_fa:
 rule txome_fa:
     input:
         fa=FTP.remote(
-            "ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_32/gencode.v32.transcripts.fa.gz",
+            "ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_42/gencode.v42.transcripts.fa.gz",
             static=True,
         ),
         gtf=rules.txome_gtf.output,
@@ -98,6 +98,6 @@ rule all:
         ),
         expand(
             rules.reads.output,
-            sample=["a", "b", "c", "d", "e"],
+            sample=["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"],
             chrom=21,
         ),
