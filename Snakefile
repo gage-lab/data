@@ -75,12 +75,13 @@ rule reads:
         fq1="reads/{sample}.chr{chrom}.1.fq.gz",
         fq2="reads/{sample}.chr{chrom}.2.fq.gz",
     params:
-        seed=lambda wildcards: abs(hash(wildcards.sample)) % 10000,
+        seed=42,
+        subsample=0.4,
     conda:
         "envs/samtools.yaml"
     shell:
         """
-        samtools view -b -s{params.seed}.2 {input[0]} chr{wildcards.chrom} > {output.bam}
+        samtools view -b --subsample-seed {params.seed} --subsample {params.subsample} {input[0]} chr{wildcards.chrom} > {output.bam}
         samtools fastq -1 {output.fq1} -2 {output.fq2} -0 /dev/null -s /dev/null {output.bam}
         """
 
