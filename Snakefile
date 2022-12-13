@@ -75,7 +75,7 @@ rule reads:
         fq1="reads/{sample}.chr{chrom}.1.fq.gz",
         fq2="reads/{sample}.chr{chrom}.2.fq.gz",
     params:
-        seed=42,
+        seed=lambda wildcards: abs(hash(wildcards.sample)) % 10000,
         subsample=0.4,
     conda:
         "envs/samtools.yaml"
