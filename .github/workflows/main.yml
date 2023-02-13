@@ -1,0 +1,48 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  Formatting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Formatting
+        uses: github/super-linter@v4
+        env:
+          VALIDATE_ALL_CODEBASE: false
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_SNAKEMAKE_SNAKEFMT: true
+
+  Testing:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+    strategy:
+      matrix:
+        type: ["rnaseq"]
+    needs:
+      - Formatting
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          lfs: true
+      - name: Install mamba
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          miniforge-variant: Mambaforge
+          miniforge-version: latest
+          use-mamba: true
+          python-version: 3.9
+          channels: conda-forge,bioconda,nodefaults
+          channel-priority: strict
+      - name: Install snakemake
+        run: mamba install python=3.9 snakemake
+      - name: Run pipeline
+        run: snakemake ${{ matrix.type }} --use-conda --show-failed-logs --cores 2 --conda-cleanup-pkgs cache
