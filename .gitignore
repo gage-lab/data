@@ -11,7 +11,7 @@ scripts/.snakemake*
 !resources/*
 !envs
 !envs/*
-!environment.yaml
+!environment.yml
 !LICENSE.md
 !README.md
 !rules
