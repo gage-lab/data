@@ -7,7 +7,6 @@ This workflow creates small test datasets for NGS data analyses.
 
 ## Authors
 
-- Johannes Köster (@johanneskoester), https://koesterlab.github.io
 - Michael Cuoco (@mikecuoco), https://michaelcuoco.com
 
 ## Usage
