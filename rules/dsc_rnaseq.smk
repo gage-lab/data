@@ -7,6 +7,7 @@ rule untar_refdata:
         ),
     output:
         directory("refdata-gex-GRCh38-2020-A"),
+    cache: True
     shell:
         "tar -xf {input}"
 
@@ -36,6 +37,7 @@ rule get_whitelist:
         ),
     output:
         "dsc_rnaseq/10x_v3_whitelist.txt",
+    cache: True
     shell:
         "gunzip -c {input} > {output}"
 
@@ -73,6 +75,7 @@ rule untar_reads:
         ),
     output:
         directory("Brain_Tumor_3p_LT_fastqs"),
+    cache: True
     conda:
         "../environment.yaml"
     shell:

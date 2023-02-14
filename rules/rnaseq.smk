@@ -7,6 +7,7 @@ rule txome_gtf:
         ),
     output:
         "rnaseq/ref/txome.chr{chrom}.gtf",
+    cache: True
     shell:
         "zgrep -P ^chr{wildcards.chrom} {input} > {output}"
 
@@ -20,6 +21,7 @@ rule rmsk_gtf:
         ),
     output:
         "rnaseq/ref/rmsk.chr{chrom}.gtf",
+    cache: True
     shell:
         "zgrep -P ^chr{wildcards.chrom} {input} > {output}"
 
@@ -33,6 +35,7 @@ rule genome_fa:
         ),
     output:
         "rnaseq/ref/genome.chr{chrom}.fa",
+    cache: True
     shell:
         "gzip -dc {input} > {output}"
 
@@ -48,6 +51,7 @@ rule txome_fa:
     output:
         fa="rnaseq/ref/txome.chr{chrom}.fa",
         names="rnaseq/ref/names.chr{chrom}.lst",
+    cache: True
     conda:
         "../environment.yaml"
     shell:
