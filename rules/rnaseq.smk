@@ -49,7 +49,7 @@ rule txome_fa:
         fa="rnaseq/ref/txome.chr{chrom}.fa",
         names="rnaseq/ref/names.chr{chrom}.lst",
     conda:
-        "../environment.yml"
+        "../environment.yaml"
     shell:
         """
         grep -o 'ENST[0-9]*\.[0-9]' {input.gtf} | sort | uniq | awk '{{print $1".*"}}' > {output.names}
@@ -75,7 +75,7 @@ rule reads:
         seed=lambda wildcards: abs(hash(wildcards.sample)) % 10000,
         subsample=0.4,
     conda:
-        "../environment.yml"
+        "../environment.yaml"
     shell:
         """
         samtools view -b --subsample-seed {params.seed} --subsample {params.subsample} {input[0]} chr{wildcards.chrom} > {output.bam}

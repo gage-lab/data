@@ -18,7 +18,7 @@ rule get_refdata:
         fa="dsc_rnaseq/ref/genome.chr{chrom}.fa",
         gtf="dsc_rnaseq/ref/genes.chr{chrom}.gtf",
     conda:
-        "../environment.yml"
+        "../environment.yaml"
     shell:
         """
         seqkit grep -n -p "chr{wildcards.chrom}" {input}/fasta/genome.fa > {output.fa}
@@ -56,7 +56,7 @@ rule find_rids:
         seed=lambda wildcards: abs(hash(wildcards.sample)) % 10000,
         subsample=0.5,
     conda:
-        "../environment.yml"
+        "../environment.yaml"
     shell:
         """
         # get read IDs from BAM file
@@ -74,7 +74,7 @@ rule untar_reads:
     output:
         directory("Brain_Tumor_3p_LT_fastqs"),
     conda:
-        "../environment.yml"
+        "../environment.yaml"
     shell:
         "tar -xf {input.fastq}"
 
@@ -86,7 +86,7 @@ rule get_reads:
     output:
         "dsc_rnaseq/{sample}.chr{chrom}_{read}.fastq.gz",
     conda:
-        "../environment.yml"
+        "../environment.yaml"
     shell:
         "seqkit grep -n -f {input.ids} {input.untar}/*{wildcards.read}_001.fastq.gz > {output}"
 
