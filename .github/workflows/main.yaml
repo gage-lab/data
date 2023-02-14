@@ -29,7 +29,7 @@ jobs:
         shell: bash -l {0}
     strategy:
       matrix:
-        type: ["rnaseq", "dsc_rnaseq", "wgs"]
+        type: ["rnaseq", "scrnaseq_10x_v3", "wgs"]
     needs:
       - Formatting
     steps:

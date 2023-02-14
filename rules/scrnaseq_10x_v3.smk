@@ -16,8 +16,8 @@ rule get_refdata:
     input:
         rules.untar_refdata.output,
     output:
-        fa="dsc_rnaseq/ref/genome.chr{chrom}.fa",
-        gtf="dsc_rnaseq/ref/genes.chr{chrom}.gtf",
+        fa="scrnaseq_10x_v3/ref/genome.chr{chrom}.fa",
+        gtf="scrnaseq_10x_v3/ref/genes.chr{chrom}.gtf",
     conda:
         "../environment.yaml"
     shell:
@@ -36,7 +36,7 @@ rule get_whitelist:
             static=True,
         ),
     output:
-        "dsc_rnaseq/10x_v3_whitelist.txt",
+        "scrnaseq_10x_v3/10x_v3_whitelist.txt",
     cache: "omit-software"
     shell:
         "gunzip -c {input} > {output}"
@@ -53,7 +53,7 @@ rule find_rids:
             keep_local=True,
         ),
     output:
-        "dsc_rnaseq/{sample}.chr{chrom}.ids.txt",
+        "scrnaseq_10x_v3/{sample}.chr{chrom}.ids.txt",
     params:
         seed=lambda wildcards: abs(hash(wildcards.sample)) % 10000,
         subsample=0.5,
@@ -88,14 +88,14 @@ rule get_reads:
         untar=rules.untar_reads.output,
         ids=rules.find_rids.output,
     output:
-        "dsc_rnaseq/{sample}.chr{chrom}_{read}.fastq.gz",
+        "scrnaseq_10x_v3/{sample}.chr{chrom}_{read}.fastq.gz",
     conda:
         "../environment.yaml"
     shell:
         "seqkit grep -n -f {input.ids} {input.untar}/*{wildcards.read}_001.fastq.gz > {output}"
 
 
-rule dsc_rnaseq:
+rule scrnaseq_10x_v3:
     input:
         expand(
             rules.get_reads.output,
