@@ -49,15 +49,18 @@ rule txome_fa:
         ),
         gtf=rules.txome_gtf.output,
     output:
-        fa="rnaseq/ref/txome.chr{chrom}.fa",
-        names="rnaseq/ref/names.chr{chrom}.lst",
+        multiext(
+            "rnaseq/ref/",
+            "names.chr{chrom}.lst",
+            "txome.chr{chrom}.fa",
+        ),
     cache: True
     conda:
         "../environment.yaml"
     shell:
         """
-        grep -o 'ENST[0-9]*\.[0-9]' {input.gtf} | sort | uniq | awk '{{print $1".*"}}' > {output.names}
-        zcat {input.fa} | seqkit grep -f {output.names} -r -I > {output.fa}
+        grep -o 'ENST[0-9]*\.[0-9]' {input.gtf} | sort | uniq | awk '{{print $1".*"}}' > {output[0]}
+        zcat {input.fa} | seqkit grep -f {output[0]} -r -I > {output[1]}
         """
 
 
