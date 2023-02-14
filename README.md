@@ -17,4 +17,7 @@ Use this repo as a submodule in your project! To generate the test data, simply 
 ```bash
 # generate rnaseq test data
 snakemake rnaseq --use-conda -c1
+
+# genearte 10x test data
+snakemake dsc_rnaseq --use-conda -c1
 ```
