@@ -14,9 +14,12 @@ This workflow creates small test datasets for NGS data analyses.
 Use this repo as a submodule in your project! To generate the test data, simply run the following from this repo's base
 
 ```bash
-# generate rnaseq test data
+# generate bulk RNA-seq test data
 snakemake rnaseq --use-conda -c1
 
-# generate 10x test data
-snakemake dsc_rnaseq --use-conda -c1
+# generate 10x v3 scRNA-seq test data
+snakemake scrnaseq_10x_v3 --use-conda -c1
+
+# generate Whole-Genome Sequencing test data
+snakemake wgs --use-conda -c1
 ```
