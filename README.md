@@ -1,7 +1,7 @@
 # Snakemake workflow: ngs-test-data
 
 [![Snakemake](https://img.shields.io/badge/snakemake-≥7.16-brightgreen.svg)](https://snakemake.readthedocs.org/)
-[![Tests](https://github.com/gage-lab/ngs-test-data/actions/workflows/main.yml/badge.svg)](https://github.com/gage-lab/ngs-test-data/actions/workflows/main.yml)
+[![Tests](https://github.com/gage-lab/ngs-test-data/actions/workflows/main.yml/badge.svg)](https://github.com/gage-lab/ngs-test-data/actions/workflows/main.yaml)
 
 This workflow creates small test datasets for NGS data analyses.
 
