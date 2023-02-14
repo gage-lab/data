@@ -56,7 +56,7 @@ jobs:
       - name: Run pipeline
         run: |
           mkdir -p ${{ env.SNAKEMAKE_OUTPUT_CACHE }}
-          export SNAKEMAKE_OUTPUT_CACHE=${{ env.SNAKEMAKE_OUTPUT_CACHE }}
+          export SNAKEMAKE_OUTPUT_CACHE=$(pwd)/${{ env.SNAKEMAKE_OUTPUT_CACHE }}
           snakemake ${{ matrix.type }} \
           --use-conda \
           --show-failed-logs \

@@ -2,14 +2,14 @@
 rule txome_gtf:
     input:
         FTP.remote(
-            "ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_42/gencode.v42.basic.annotation.gtf.gz",
+            "ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_43/gencode.v43.basic.annotation.gtf.gz",
             static=True,
         ),
     output:
         "rnaseq/ref/txome.chr{chrom}.gtf",
-    cache: True
+    cache: "omit-software"
     shell:
-        "zgrep -P ^chr{wildcards.chrom} {input} > {output}"
+        "gzip -dc {input} | grep ^chr{wildcards.chrom} > {output}"
 
 
 # download repeatmasker annotation
@@ -21,9 +21,9 @@ rule rmsk_gtf:
         ),
     output:
         "rnaseq/ref/rmsk.chr{chrom}.gtf",
-    cache: True
+    cache: "omit-software"
     shell:
-        "zgrep -P ^chr{wildcards.chrom} {input} > {output}"
+        "gzip -dc {input} | grep ^chr{wildcards.chrom} > {output}"
 
 
 # download genome fasta
@@ -32,10 +32,11 @@ rule genome_fa:
         FTP.remote(
             "ftp://hgdownload.soe.ucsc.edu/goldenPath/hg38/chromosomes/chr{chrom}.fa.gz",
             static=True,
+            immediate_close=True,
         ),
     output:
         "rnaseq/ref/genome.chr{chrom}.fa",
-    cache: True
+    cache: "omit-software"
     shell:
         "gzip -dc {input} > {output}"
 
@@ -44,8 +45,9 @@ rule genome_fa:
 rule txome_fa:
     input:
         fa=FTP.remote(
-            "ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_42/gencode.v42.transcripts.fa.gz",
+            "ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_43/gencode.v43.transcripts.fa.gz",
             static=True,
+            immediate_close=True,
         ),
         gtf=rules.txome_gtf.output,
     output:
@@ -54,13 +56,13 @@ rule txome_fa:
             "names.chr{chrom}.lst",
             "txome.chr{chrom}.fa",
         ),
-    cache: True
+    cache: "omit-software"
     conda:
         "../environment.yaml"
     shell:
         """
         grep -o 'ENST[0-9]*\.[0-9]' {input.gtf} | sort | uniq | awk '{{print $1".*"}}' > {output[0]}
-        zcat {input.fa} | seqkit grep -f {output[0]} -r -I > {output[1]}
+        gzip -dc {input.fa} | seqkit grep -f {output[0]} -I > {output[1]}
         """
 
 
@@ -73,6 +75,7 @@ rule reads:
             ],
             static=True,
             keep_local=True,
+            immediate_close=True,
         ),
     output:
         bam="rnaseq/{sample}.chr{chrom}.bam",
@@ -85,6 +88,7 @@ rule reads:
         "../environment.yaml"
     shell:
         """
+        touch -m {input[1]}
         samtools view -b --subsample-seed {params.seed} --subsample {params.subsample} {input[0]} chr{wildcards.chrom} > {output.bam}
         samtools fastq -1 {output.fq1} -2 {output.fq2} -0 /dev/null -s /dev/null {output.bam}
         """

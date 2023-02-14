@@ -7,7 +7,7 @@ rule untar_refdata:
         ),
     output:
         directory("refdata-gex-GRCh38-2020-A"),
-    cache: True
+    cache: "omit-software"
     shell:
         "tar -xf {input}"
 
@@ -37,7 +37,7 @@ rule get_whitelist:
         ),
     output:
         "dsc_rnaseq/10x_v3_whitelist.txt",
-    cache: True
+    cache: "omit-software"
     shell:
         "gunzip -c {input} > {output}"
 
@@ -61,6 +61,7 @@ rule find_rids:
         "../environment.yaml"
     shell:
         """
+        touch -m {input[1]}
         # get read IDs from BAM file
         samtools view {input[0]} chr{wildcards.chrom} | \
             awk 'BEGIN {{srand({params.seed})}} {{if (rand() < {params.subsample}) print $1}}' > {output}
@@ -75,7 +76,7 @@ rule untar_reads:
         ),
     output:
         directory("Brain_Tumor_3p_LT_fastqs"),
-    cache: True
+    cache: "omit-software"
     conda:
         "../environment.yaml"
     shell:
