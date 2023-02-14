@@ -26,17 +26,17 @@ jobs:
         shell: bash -l {0}
     strategy:
       matrix:
-        type: ["rnaseq"]
+        type: ["rnaseq", "dsc_rnaseq"]
     needs:
       - Formatting
     steps:
       - uses: actions/checkout@v3
         with:
           lfs: true
-      - name: Install mamba
+      - name: Install Mamba
         uses: conda-incubator/setup-miniconda@v2
         with:
-          miniforge-variant: Mambaforge
+          miniforge-variant: Mamabaforge-pypy3
           miniforge-version: latest
           use-mamba: true
           python-version: 3.9
