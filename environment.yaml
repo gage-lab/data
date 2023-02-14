@@ -7,3 +7,4 @@ dependencies:
   - seqkit>=2.0.0
   - tar
   - gawk
+  - gzip

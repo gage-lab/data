@@ -62,7 +62,7 @@ rule txome_fa:
     shell:
         """
         grep -o 'ENST[0-9]*\.[0-9]' {input.gtf} | sort | uniq | awk '{{print $1".*"}}' > {output[0]}
-        gzip -dc {input.fa} | seqkit grep -f {output[0]} -I > {output[1]}
+        gzip -dc {input.fa} | seqkit grep -f {output[0]} -r > {output[1]}
         """
 
 
