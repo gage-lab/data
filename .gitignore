@@ -1,6 +1,7 @@
 *
 !Snakefile
-!environment.yml
+!environment.yaml
+!.pre-commit-config.yaml
 !README.md
 !rules
 !rules/*
