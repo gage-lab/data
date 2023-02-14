@@ -56,7 +56,6 @@ rule txome_fa:
             "names.chr{chrom}.lst",
             "txome.chr{chrom}.fa",
         ),
-    cache: "omit-software"
     conda:
         "../environment.yaml"
     shell:
