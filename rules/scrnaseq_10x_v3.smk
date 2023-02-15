@@ -1,29 +1,18 @@
 # download reference data from 10x Genomics
-rule untar_refdata:
+rule get_refdata:
     input:
         HTTP.remote(
             "https://cf.10xgenomics.com/supp/cell-exp/refdata-gex-GRCh38-2020-A.tar.gz",
             static=True,
         ),
     output:
-        directory("refdata-gex-GRCh38-2020-A"),
+        multiext("scrnaseq_10x_v3/ref/genome.chr{chrom}", ".fa", ".gtf"),
     cache: "omit-software"
     shell:
-        "tar -xf {input}"
-
-
-rule get_refdata:
-    input:
-        rules.untar_refdata.output,
-    output:
-        fa="scrnaseq_10x_v3/ref/genome.chr{chrom}.fa",
-        gtf="scrnaseq_10x_v3/ref/genes.chr{chrom}.gtf",
-    conda:
-        "../environment.yaml"
-    shell:
         """
-        seqkit grep -n -p "chr{wildcards.chrom}" {input}/fasta/genome.fa > {output.fa}
-        grep "^chr{wildcards.chrom}" {input}/genes/genes.gtf > {output.gtf}
+        tar -xf {input} --wildcards '*genes.gtf' '*genome.fa'
+        seqkit grep -p "chr{wildcards.chrom}" $(basename {input} .tar.gz)/fasta/genome.fa > {output[0]}
+        grep "^chr{wildcards.chrom}" $(basename {input} .tar.gz)/genes/genes.gtf > {output[1]}
         """
 
 
