@@ -8,6 +8,8 @@ rule get_refdata:
     output:
         multiext("scrnaseq_10x_v3/ref/", "genome.chr{chrom}.fa", "genes.chr{chrom}.gtf"),
     cache: "omit-software"
+    conda:
+        "../environment.yaml"
     shell:
         """
         tar -xf {input} --wildcards '*genes.gtf' '*genome.fa'
