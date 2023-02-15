@@ -6,7 +6,7 @@ rule get_refdata:
             static=True,
         ),
     output:
-        multiext("scrnaseq_10x_v3/ref/genome.chr{chrom}", ".fa", ".gtf"),
+        multiext("scrnaseq_10x_v3/ref/", "genome.chr{chrom}.fa", "genes.chr{chrom}.gtf"),
     cache: "omit-software"
     shell:
         """
