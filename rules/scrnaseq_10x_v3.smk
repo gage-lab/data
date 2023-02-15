@@ -81,7 +81,7 @@ rule get_reads:
     conda:
         "../environment.yaml"
     shell:
-        "seqkit grep -f {input.ids} {input.untar}/*{wildcards.read}_001.fastq.gz > {output}"
+        "seqkit grep -f {input.ids} {input.untar}/*{wildcards.read}_001.fastq.gz | gzip -c > {output}"
 
 
 rule scrnaseq_10x_v3:
