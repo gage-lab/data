@@ -7,7 +7,6 @@ rule get_refdata:
         ),
     output:
         multiext("scrnaseq_10x_v3/ref/", "genome.chr{chrom}.fa", "genes.chr{chrom}.gtf"),
-    cache: "omit-software"
     conda:
         "../environment.yaml"
     shell:
@@ -28,7 +27,6 @@ rule get_whitelist:
         ),
     output:
         "scrnaseq_10x_v3/10x_v3_whitelist.txt",
-    cache: "omit-software"
     shell:
         "gunzip -c {input} > {output}"
 
@@ -83,7 +81,7 @@ rule get_reads:
     conda:
         "../environment.yaml"
     shell:
-        "seqkit grep -n -f {input.ids} {input.untar}/*{wildcards.read}_001.fastq.gz > {output}"
+        "seqkit grep -f {input.ids} {input.untar}/*{wildcards.read}_001.fastq.gz > {output}"
 
 
 rule scrnaseq_10x_v3:
