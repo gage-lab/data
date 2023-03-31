@@ -26,6 +26,17 @@ rule rmsk_gtf:
         "gzip -dc {input} | grep ^chr{wildcards.chrom} > {output}"
 
 
+rule telocal_locInd:
+    input:
+        rules.rmsk_gtf.output,
+    output:
+        "rnaseq/ref/rmsk.chr{chrom}.gtf.locInd",
+    conda:
+        "../telocal.yaml"
+    script:
+        "../scripts/telocal_locInd.py"
+
+
 # download genome fasta
 rule genome_fa:
     input:
@@ -101,6 +112,7 @@ rule rnaseq:
                 "rnaseq/ref/genome.chr{chrom}.fa",
                 "rnaseq/ref/txome.chr{chrom}.fa",
                 "rnaseq/ref/rmsk.chr{chrom}.gtf",
+                "rnaseq/ref/rmsk.chr{chrom}.gtf.locInd",
             ],
             chrom=21,
         ),

@@ -9,3 +9,6 @@
 !.gitattributes
 !.github
 !.github/*
+!scripts
+!scripts/*
+!telocal.yaml
