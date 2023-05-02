@@ -91,15 +91,12 @@ rule reads:
         bam="rnaseq/{sample}.chr{chrom}.bam",
         fq1="rnaseq/{sample}.chr{chrom}.1.fq.gz",
         fq2="rnaseq/{sample}.chr{chrom}.2.fq.gz",
-    params:
-        seed=lambda wildcards: abs(hash(wildcards.sample)) % 10000,
-        subsample=0.4,
     conda:
         "../environment.yaml"
     shell:
         """
         touch -m {input[1]}
-        samtools view -b --subsample-seed {params.seed} --subsample {params.subsample} {input[0]} chr{wildcards.chrom} > {output.bam}
+        samtools view -b {input[0]} chr{wildcards.chrom} > {output.bam}
         samtools fastq -1 {output.fq1} -2 {output.fq2} -0 /dev/null -s /dev/null {output.bam}
         """
 
