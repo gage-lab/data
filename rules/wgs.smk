@@ -6,6 +6,7 @@ rule wgs_genome_fa:
             static=True,
             keep_local=True,
             immediate_close=True,
+            timeout=600,
         ),
     output:
         "wgs/ref/genome.chr{chrom}.fa",
@@ -23,6 +24,7 @@ rule wgs_reads:
             static=True,
             keep_local=True,
             immediate_close=True,
+            timeout=600,
         ),
         cram=FTP.remote(
             [
@@ -32,6 +34,7 @@ rule wgs_reads:
             static=True,
             keep_local=True,
             immediate_close=True,
+            timeout=600,
         ),
     output:
         cram="wgs/{sample}.chr{chrom}.cram",
