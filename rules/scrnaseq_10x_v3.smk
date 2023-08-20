@@ -1,19 +1,28 @@
 # download reference data from 10x Genomics
 rule get_refdata:
     input:
-        HTTP.remote(
+        ref10x=HTTP.remote(
             "https://cf.10xgenomics.com/supp/cell-exp/refdata-gex-GRCh38-2020-A.tar.gz",
             static=True,
         ),
+        rmsk=FTP.remote(
+            "hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.out.gz",
+            keep_local=True,
+            static=True,
+        ),
     output:
-        multiext("scrnaseq_10x_v3/ref/", "genome.chr{chrom}.fa", "genes.chr{chrom}.gtf"),
+        fa="scrnaseq_10x_v3/ref/genome.chr{chrom}.fa",
+        gtf="scrnaseq_10x_v3/ref/genes.chr{chrom}.gtf",
+        rmsk="scrnaseq_10x_v3/ref/rmsk_chr{chrom}.out",
     conda:
         "../environment.yaml"
     shell:
         """
-        tar -xf {input} --wildcards '*genes.gtf' '*genome.fa'
-        seqkit grep -p "chr{wildcards.chrom}" $(basename {input} .tar.gz)/fasta/genome.fa > {output[0]}
-        grep "^chr{wildcards.chrom}" $(basename {input} .tar.gz)/genes/genes.gtf > {output[1]}
+        tar -xf {input.ref10x} --wildcards '*genes.gtf' '*genome.fa'
+        seqkit grep -p "chr{wildcards.chrom}" $(basename {input.ref10x} .tar.gz)/fasta/genome.fa > {output.fa}
+        grep "^chr{wildcards.chrom}" $(basename {input.ref10x} .tar.gz)/genes/genes.gtf > {output.gtf}
+        gzip -dc {input.rmsk} | head -n 3 > {output.rmsk}
+        gzip -dc {input.rmsk} | grep chr{wildcards.chrom} >> {output.rmsk}
         """
 
 
