@@ -1,28 +1,37 @@
 # download reference data from 10x Genomics
 rule get_refdata:
     input:
-        ref10x=HTTP.remote(
+        HTTP.remote(
             "https://cf.10xgenomics.com/supp/cell-exp/refdata-gex-GRCh38-2020-A.tar.gz",
             static=True,
         ),
-        rmsk=FTP.remote(
-            "hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.out.gz",
-            keep_local=True,
-            static=True,
-        ),
     output:
-        fa="scrnaseq_10x_v3/ref/genome.chr{chrom}.fa",
-        gtf="scrnaseq_10x_v3/ref/genes.chr{chrom}.gtf",
-        rmsk="scrnaseq_10x_v3/ref/rmsk_chr{chrom}.out",
+        multiext("scrnaseq_10x_v3/ref/", "genome.chr{chrom}.fa", "genes.chr{chrom}.gtf"),
     conda:
         "../environment.yaml"
     shell:
         """
         tar -xf {input.ref10x} --wildcards '*genes.gtf' '*genome.fa'
-        seqkit grep -p "chr{wildcards.chrom}" $(basename {input.ref10x} .tar.gz)/fasta/genome.fa > {output.fa}
-        grep "^chr{wildcards.chrom}" $(basename {input.ref10x} .tar.gz)/genes/genes.gtf > {output.gtf}
-        gzip -dc {input.rmsk} | head -n 3 > {output.rmsk}
-        gzip -dc {input.rmsk} | grep chr{wildcards.chrom} >> {output.rmsk}
+        seqkit grep -p "chr{wildcards.chrom}" $(basename {input.ref10x} .tar.gz)/fasta/genome.fa > {output[0]}
+        grep "^chr{wildcards.chrom}" $(basename {input.ref10x} .tar.gz)/genes/genes.gtf > {output[1]}
+        """
+
+
+rule get_rmsk:
+    input:
+        FTP.remote(
+            "hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.out.gz",
+            keep_local=True,
+            static=True,
+        ),
+    output:
+        "scrnaseq_10x_v3/ref/rmsk_chr{chrom}.out",
+    shell:
+        """
+        gunzip -f {input}
+        rmsk=$(dirname {input})/$(basename {input} .gz)
+        head -n 3 $rmsk > {output}
+        grep chr{wildcards.chrom} $rmsk >> {output}
         """
 
 
@@ -103,5 +112,9 @@ rule scrnaseq_10x_v3:
         ),
         expand(
             rules.get_refdata.output,
+            chrom=21,
+        ),
+        expand(
+            rules.get_rmsk.output,
             chrom=21,
         ),
