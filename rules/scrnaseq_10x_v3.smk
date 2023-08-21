@@ -11,9 +11,9 @@ rule get_refdata:
         "../environment.yaml"
     shell:
         """
-        tar -xf {input.ref10x} --wildcards '*genes.gtf' '*genome.fa'
-        seqkit grep -p "chr{wildcards.chrom}" $(basename {input.ref10x} .tar.gz)/fasta/genome.fa > {output[0]}
-        grep "^chr{wildcards.chrom}" $(basename {input.ref10x} .tar.gz)/genes/genes.gtf > {output[1]}
+        tar -xf {input} --wildcards '*genes.gtf' '*genome.fa'
+        seqkit grep -p "chr{wildcards.chrom}" $(basename {input} .tar.gz)/fasta/genome.fa > {output[0]}
+        grep "^chr{wildcards.chrom}" $(basename {input} .tar.gz)/genes/genes.gtf > {output[1]}
         """
 
 
