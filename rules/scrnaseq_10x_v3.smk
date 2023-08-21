@@ -17,6 +17,24 @@ rule get_refdata:
         """
 
 
+rule get_rmsk:
+    input:
+        FTP.remote(
+            "hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.out.gz",
+            keep_local=True,
+            static=True,
+        ),
+    output:
+        "scrnaseq_10x_v3/ref/rmsk_chr{chrom}.out",
+    shell:
+        """
+        gunzip -f {input}
+        rmsk=$(dirname {input})/$(basename {input} .gz)
+        head -n 3 $rmsk > {output}
+        grep chr{wildcards.chrom} $rmsk >> {output}
+        """
+
+
 # download barcode whitelist from 10x Genomics
 # for 10x v3 chemistry
 rule get_whitelist:
@@ -94,5 +112,9 @@ rule scrnaseq_10x_v3:
         ),
         expand(
             rules.get_refdata.output,
+            chrom=21,
+        ),
+        expand(
+            rules.get_rmsk.output,
             chrom=21,
         ),
