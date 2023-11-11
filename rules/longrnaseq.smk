@@ -1,13 +1,38 @@
-rule long_rna_reads:
+# ONT from https://github.com/nanopore-wgs-consortium/NA12878/blob/master/RNA.md
+def get_reads(wildcards):
+    if wildcards.libtype == "ONT_directRNA":
+        return HTTP.remote(
+            [
+                "https://s3.amazonaws.com/nanopore-human-wgs/rna/bamFiles/NA12878-DirectRNA.pass.dedup.NoU.fastq.hg38.minimap2.sorted.bam",
+                "https://s3.amazonaws.com/nanopore-human-wgs/rna/bamFiles/NA12878-DirectRNA.pass.dedup.NoU.fastq.hg38.minimap2.sorted.bam.bai",
+            ],
+            static=True,
+            keep_local=True,
+        )
+    elif wildcards.libtype == "ONT_cDNA":
+        return HTTP.remote(
+            [
+                "https://s3.amazonaws.com/nanopore-human-wgs/rna/bamFiles/NA12878-cDNA-1D.pass.dedup.fastq.hg38.minimap2.sorted.bam",
+                "https://s3.amazonaws.com/nanopore-human-wgs/rna/bamFiles/NA12878-cDNA-1D.pass.dedup.fastq.hg38.minimap2.sorted.bam.bai",
+            ],
+            static=True,
+            keep_local=True,
+        )
+    else:
+        raise ValueError("Unknown libtype: {}".format(wildcards.libtype))
+
+
+rule longrnaseq_reads:
+    input:
+        get_reads,
     output:
-        bam="longrnaseq/{sample}.chr{chrom}.bam",
-        fq="longrnaseq/{sample}.chr{chrom}.fq.gz",
+        bam="longrnaseq/{libtype}/{sample}.chr{chrom}.bam",
+        fq="longrnaseq/{libtype}/{sample}.chr{chrom}.fq.gz",
     conda:
         "../environment.yaml"
     shell:
         """
-        aws s3 --no-sign-request sync s3://sg-nex-data/data/sequencing_data_ont/bam/genome/SGNex_MCF7_directcDNA_replicate1_run2/ .
-        samtools view -b SGNex_MCF7_directcDNA_replicate1_run2.bam {wildcards.chrom} > {output.bam}
+        samtools view -b {input[0]} chr{wildcards.chrom} > {output.bam}
         samtools fastq {output.bam} | gzip > {output.fq}
         """
 
@@ -15,7 +40,8 @@ rule long_rna_reads:
 rule longrnaseq:
     input:
         expand(
-            rules.reads.output,
-            sample=["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"],
+            rules.longrnaseq_reads.output,
+            sample=["a", "b"],
+            libtype=["ONT_directRNA", "ONT_cDNA"],
             chrom=21,
         ),
