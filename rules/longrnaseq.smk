@@ -6,8 +6,7 @@ rule long_rna_reads:
         "../environment.yaml"
     shell:
         """
-        aws s3 --no-sign-request sync s3://sg-nex-data/data/sequencing_data_ont/bam/genome/SGNex_MCF7_directcDNA_replicate1_run2/SGNex_MCF7_directcDNA_replicate1_run2.bam .
-        aws s3 --no-sign-request sync s3://sg-nex-data/data/sequencing_data_ont/bam/genome/SGNex_MCF7_directcDNA_replicate1_run2/SGNex_MCF7_directcDNA_replicate1_run2.bam.bai .
+        aws s3 --no-sign-request sync s3://sg-nex-data/data/sequencing_data_ont/bam/genome/SGNex_MCF7_directcDNA_replicate1_run2/ .
         samtools view -b SGNex_MCF7_directcDNA_replicate1_run2.bam {wildcards.chrom} > {output.bam}
         samtools fastq {output.bam} | gzip > {output.fq}
         """
