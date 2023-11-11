@@ -29,7 +29,7 @@ jobs:
         shell: bash -l {0}
     strategy:
       matrix:
-        type: ["rnaseq", "scrnaseq_10x_v3", "wgs"]
+        type: ["rnaseq", "scrnaseq_10x_v3", "wgs", "longrnaseq"]
     needs:
       - Formatting
     steps:
@@ -52,7 +52,7 @@ jobs:
           channels: conda-forge,bioconda,nodefaults
           channel-priority: strict
       - name: Install snakemake
-        run: mamba install python=3.9 snakemake
+        run: mamba install snakemake
       - name: Run pipeline
         run: |
           mkdir -p ${{ env.SNAKEMAKE_OUTPUT_CACHE }}
