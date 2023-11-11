@@ -36,12 +36,6 @@ jobs:
       - uses: actions/checkout@v3
         with:
           lfs: true
-      - name: Snakemake cache
-        id: cache-sm
-        uses: actions/cache@v3
-        with:
-          path: ${{ env.SNAKEMAKE_OUTPUT_CACHE }}
-          key: ${{ matrix.type }}-sm
       - name: Install Mamba
         uses: conda-incubator/setup-miniconda@v2
         with:
@@ -55,12 +49,9 @@ jobs:
         run: mamba install snakemake
       - name: Run pipeline
         run: |
-          mkdir -p ${{ env.SNAKEMAKE_OUTPUT_CACHE }}
-          export SNAKEMAKE_OUTPUT_CACHE=$(pwd)/${{ env.SNAKEMAKE_OUTPUT_CACHE }}
           snakemake ${{ matrix.type }} \
           --use-conda \
           --show-failed-logs \
           --cores 2 \
-          --cache \
           --conda-cleanup-pkgs cache \
           --all-temp
