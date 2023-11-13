@@ -84,7 +84,6 @@ rule reads:
                 "ftp.ebi.ac.uk/biostudies/fire/E-GEUV-/001/E-GEUV-1/Files/E-GEUV-1/processed/NA20778.4.M_120208_1.bam.bai",
             ],
             static=True,
-            keep_local=True,
             immediate_close=True,
         ),
     output:
