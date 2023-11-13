@@ -8,7 +8,6 @@ def get_reads(wildcards):
                 "https://s3.amazonaws.com/nanopore-human-wgs/rna/bamFiles/NA12878-DirectRNA.fail.dedup.NoU.fastq.hg38.minimap2.sorted.bam.bai",
             ],
             static=True,
-            keep_local=True,
         )
     elif wildcards.libtype == "ONT_cDNA":
         return HTTP.remote(
@@ -17,7 +16,6 @@ def get_reads(wildcards):
                 "https://s3.amazonaws.com/nanopore-human-wgs/rna/bamFiles/NA12878-cDNA-1D.fail.dedup.fastq.hg38.minimap2.sorted.bam.bai",
             ],
             static=True,
-            keep_local=True,
         )
     else:
         raise ValueError("Unknown libtype: {}".format(wildcards.libtype))
