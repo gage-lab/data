@@ -1,10 +1,11 @@
 # ONT from https://github.com/nanopore-wgs-consortium/NA12878/blob/master/RNA.md
+# chose those files failing QC as tehy are smaller
 def get_reads(wildcards):
     if wildcards.libtype == "ONT_directRNA":
         return HTTP.remote(
             [
-                "https://s3.amazonaws.com/nanopore-human-wgs/rna/bamFiles/NA12878-DirectRNA.pass.dedup.NoU.fastq.hg38.minimap2.sorted.bam",
-                "https://s3.amazonaws.com/nanopore-human-wgs/rna/bamFiles/NA12878-DirectRNA.pass.dedup.NoU.fastq.hg38.minimap2.sorted.bam.bai",
+                "https://s3.amazonaws.com/nanopore-human-wgs/rna/bamFiles/NA12878-DirectRNA.fail.dedup.NoU.fastq.hg38.minimap2.sorted.bam",
+                "https://s3.amazonaws.com/nanopore-human-wgs/rna/bamFiles/NA12878-DirectRNA.fail.dedup.NoU.fastq.hg38.minimap2.sorted.bam.bai",
             ],
             static=True,
             keep_local=True,
@@ -12,8 +13,8 @@ def get_reads(wildcards):
     elif wildcards.libtype == "ONT_cDNA":
         return HTTP.remote(
             [
-                "https://s3.amazonaws.com/nanopore-human-wgs/rna/bamFiles/NA12878-cDNA-1D.pass.dedup.fastq.hg38.minimap2.sorted.bam",
-                "https://s3.amazonaws.com/nanopore-human-wgs/rna/bamFiles/NA12878-cDNA-1D.pass.dedup.fastq.hg38.minimap2.sorted.bam.bai",
+                "https://s3.amazonaws.com/nanopore-human-wgs/rna/bamFiles/NA12878-cDNA-1D.fail.dedup.fastq.hg38.minimap2.sorted.bam",
+                "https://s3.amazonaws.com/nanopore-human-wgs/rna/bamFiles/NA12878-cDNA-1D.fail.dedup.fastq.hg38.minimap2.sorted.bam.bai",
             ],
             static=True,
             keep_local=True,
