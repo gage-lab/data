@@ -5,4 +5,3 @@ channels:
 dependencies:
   - samtools>=1.15
   - seqkit>=2.0.0
-  - awscli

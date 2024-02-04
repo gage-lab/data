@@ -1,8 +1,10 @@
-from snakemake.remote import FTP, HTTP
+storage ftp:
+	provider="ftp"
+storage http:
+	provider="http"
 
-FTP = FTP.RemoteProvider()
-HTTP = HTTP.RemoteProvider()
-
+conda:
+	"envs/global.yaml"
 
 include: "rules/rnaseq.smk"
 include: "rules/scrnaseq_10x_v3.smk"

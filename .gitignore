@@ -1,6 +1,5 @@
 *
 !Snakefile
-!environment.yaml
 !.pre-commit-config.yaml
 !README.md
 !rules
@@ -11,4 +10,6 @@
 !.github/*
 !scripts
 !scripts/*
-!telocal.yaml
+!conda.yaml
+!envs
+!envs/*

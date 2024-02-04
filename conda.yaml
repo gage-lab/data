@@ -1,0 +1,9 @@
+channels:
+  - conda-forge
+  - bioconda
+  - nodefaults
+dependencies:
+  - snakemake>=8.0.0
+  - snakefmt>=0.10.0
+  - snakemake-storage-plugin-ftp
+  - snakemake-storage-plugin-http
