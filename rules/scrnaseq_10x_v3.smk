@@ -17,7 +17,7 @@ rule get_refdata:
 rule get_rmsk:
     input:
         storage(
-            "ftp://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.out.gz",
+            "http://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.out.gz",
             keep_local=True,
         ),
     output:
