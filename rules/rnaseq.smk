@@ -1,9 +1,8 @@
 # download transcriptome annotation
 rule txome_gtf:
     input:
-        FTP.remote(
-            "ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_43/gencode.v43.basic.annotation.gtf.gz",
-            static=True,
+        storage(
+            "ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_43/gencode.v43.basic.annotation.gtf.gz",
         ),
     output:
         "rnaseq/ref/txome.chr{chrom}.gtf",
@@ -15,15 +14,14 @@ rule txome_gtf:
 # download repeatmasker annotation
 rule rmsk_gtf:
     input:
-        HTTP.remote(
-            "https://labshare.cshl.edu/shares/mhammelllab/www-data/TEtranscripts/TE_GTF/GRCh38_GENCODE_rmsk_TE.gtf.gz",
-            static=True,
+        storage(
+            "https://labshare.cshl.edu/shares/mhammelllab/www-data/TEtranscripts/TE_GTF/GRCh38_Ensembl_rmsk_TE.gtf.gz",
         ),
     output:
         "rnaseq/ref/rmsk.chr{chrom}.gtf",
     cache: "omit-software"
     shell:
-        "gzip -dc {input} | grep ^chr{wildcards.chrom} > {output}"
+        "gzip -dc {input} | grep ^{wildcards.chrom} | awk '{{print \"chr\"$0}}' > {output}"
 
 
 rule telocal_locInd:
@@ -32,7 +30,7 @@ rule telocal_locInd:
     output:
         "rnaseq/ref/rmsk.chr{chrom}.gtf.locInd",
     conda:
-        "../telocal.yaml"
+        "../envs/telocal.yaml"
     script:
         "../scripts/telocal_locInd.py"
 
@@ -40,10 +38,8 @@ rule telocal_locInd:
 # download genome fasta
 rule genome_fa:
     input:
-        FTP.remote(
-            "ftp://hgdownload.soe.ucsc.edu/goldenPath/hg38/chromosomes/chr{chrom}.fa.gz",
-            static=True,
-            immediate_close=True,
+        storage(
+            "http://hgdownload.soe.ucsc.edu/goldenPath/hg38/chromosomes/chr{chrom}.fa.gz",
         ),
     output:
         "rnaseq/ref/genome.chr{chrom}.fa",
@@ -55,10 +51,8 @@ rule genome_fa:
 # download transcriptome fasta
 rule txome_fa:
     input:
-        fa=FTP.remote(
-            "ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_43/gencode.v43.transcripts.fa.gz",
-            static=True,
-            immediate_close=True,
+        fa=storage(
+            "ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_43/gencode.v43.transcripts.fa.gz",
         ),
         gtf=rules.txome_gtf.output,
     output:
@@ -67,8 +61,6 @@ rule txome_fa:
             "names.chr{chrom}.lst",
             "txome.chr{chrom}.fa",
         ),
-    conda:
-        "../environment.yaml"
     shell:
         """
         grep -o 'ENST[0-9]*\.[0-9]' {input.gtf} | sort | uniq | awk '{{print $1".*"}}' > {output[0]}
@@ -78,25 +70,23 @@ rule txome_fa:
 
 rule reads:
     input:
-        FTP.remote(
-            [
-                "ftp.ebi.ac.uk/biostudies/fire/E-GEUV-/001/E-GEUV-1/Files/E-GEUV-1/processed/NA20778.4.M_120208_1.bam",
-                "ftp.ebi.ac.uk/biostudies/fire/E-GEUV-/001/E-GEUV-1/Files/E-GEUV-1/processed/NA20778.4.M_120208_1.bam.bai",
-            ],
-            static=True,
-            immediate_close=True,
+        storage(
+            query="ftp://ftp.ebi.ac.uk/biostudies/fire/E-GEUV-/001/E-GEUV-1/Files/E-GEUV-1/processed/NA20778.4.M_120208_1.bam",
+            keep_local=True,
+        ),
+        storage(
+            query="ftp://ftp.ebi.ac.uk/biostudies/fire/E-GEUV-/001/E-GEUV-1/Files/E-GEUV-1/processed/NA20778.4.M_120208_1.bam.bai",
+            keep_local=True,
         ),
     output:
         bam="rnaseq/{sample}.chr{chrom}.bam",
         fq1="rnaseq/{sample}.chr{chrom}.1.fq.gz",
         fq2="rnaseq/{sample}.chr{chrom}.2.fq.gz",
-    conda:
-        "../environment.yaml"
     shell:
         """
         touch -m {input[1]}
         samtools view -b {input[0]} chr{wildcards.chrom} > {output.bam}
-        samtools fastq -1 {output.fq1} -2 {output.fq2} -0 /dev/null -s /dev/null {output.bam}
+        samtools fastq -1 {output.fq1} -2 {output.fq2} -0 /dev/null -s /dev/null {output.bam} 2> /dev/null
         """
 
 
