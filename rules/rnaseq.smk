@@ -39,7 +39,7 @@ rule telocal_locInd:
 rule genome_fa:
     input:
         storage(
-            "ftp://hgdownload.soe.ucsc.edu/goldenPath/hg38/chromosomes/chr{chrom}.fa.gz",
+            "http://hgdownload.soe.ucsc.edu/goldenPath/hg38/chromosomes/chr{chrom}.fa.gz",
         ),
     output:
         "rnaseq/ref/genome.chr{chrom}.fa",
