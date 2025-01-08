@@ -37,16 +37,14 @@ jobs:
         with:
           lfs: true
       - name: Install Mamba
-        uses: conda-incubator/setup-miniconda@v2
+        uses: conda-incubator/setup-miniconda@v3
         with:
-          miniforge-variant: Mambaforge-pypy3
           miniforge-version: latest
           use-mamba: true
-          python-version: 3.9
+          python-version: 3.12
           channels: conda-forge,bioconda,nodefaults
           channel-priority: strict
-      - name: Install snakemake
-        run: mamba install snakemake
+          environment-file: conda.yaml
       - name: Run pipeline
         run: |
           snakemake ${{ matrix.type }} \
