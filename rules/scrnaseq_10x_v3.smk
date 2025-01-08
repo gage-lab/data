@@ -1,14 +1,11 @@
 # download reference data from 10x Genomics
 rule get_refdata:
     input:
-        HTTP.remote(
+        storage(
             "https://cf.10xgenomics.com/supp/cell-exp/refdata-gex-GRCh38-2020-A.tar.gz",
-            static=True,
         ),
     output:
         multiext("scrnaseq_10x_v3/ref/", "genome.chr{chrom}.fa", "genes.chr{chrom}.gtf"),
-    conda:
-        "../environment.yaml"
     shell:
         """
         tar -xf {input} --wildcards '*genes.gtf' '*genome.fa'
@@ -19,10 +16,9 @@ rule get_refdata:
 
 rule get_rmsk:
     input:
-        FTP.remote(
-            "hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.out.gz",
+        storage(
+            "ftp://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.out.gz",
             keep_local=True,
-            static=True,
         ),
     output:
         "scrnaseq_10x_v3/ref/rmsk_chr{chrom}.out",
@@ -39,9 +35,8 @@ rule get_rmsk:
 # for 10x v3 chemistry
 rule get_whitelist:
     input:
-        HTTP.remote(
+        storage(
             "https://github.com/10XGenomics/cellranger/raw/master/lib/python/cellranger/barcodes/3M-february-2018.txt.gz",
-            static=True,
         ),
     output:
         "scrnaseq_10x_v3/10x_v3_whitelist.txt",
@@ -51,12 +46,11 @@ rule get_whitelist:
 
 rule find_rids:
     input:
-        HTTP.remote(
+        storage(
             [
                 "https://cf.10xgenomics.com/samples/cell-exp/6.0.0/Brain_Tumor_3p_LT/Brain_Tumor_3p_LT_possorted_genome_bam.bam",
                 "https://cf.10xgenomics.com/samples/cell-exp/6.0.0/Brain_Tumor_3p_LT/Brain_Tumor_3p_LT_possorted_genome_bam.bam.bai",
             ],
-            static=True,
             keep_local=True,
         ),
     output:
@@ -64,8 +58,6 @@ rule find_rids:
     params:
         seed=lambda wildcards: abs(hash(wildcards.sample)) % 10000,
         subsample=0.5,
-    conda:
-        "../environment.yaml"
     shell:
         """
         touch -m {input[1]}
@@ -77,15 +69,11 @@ rule find_rids:
 
 rule untar_reads:
     input:
-        fastq=HTTP.remote(
+        fastq=storage(
             "https://cf.10xgenomics.com/samples/cell-exp/6.0.0/Brain_Tumor_3p_LT/Brain_Tumor_3p_LT_fastqs.tar",
-            static=True,
         ),
     output:
         directory("Brain_Tumor_3p_LT_fastqs"),
-    cache: "omit-software"
-    conda:
-        "../environment.yaml"
     shell:
         "tar -xf {input.fastq}"
 
@@ -96,8 +84,6 @@ rule get_reads:
         ids=rules.find_rids.output,
     output:
         "scrnaseq_10x_v3/{sample}.chr{chrom}_{read}.fastq.gz",
-    conda:
-        "../environment.yaml"
     shell:
         "seqkit grep -f {input.ids} {input.untar}/*{wildcards.read}_001.fastq.gz | gzip -c > {output}"
 

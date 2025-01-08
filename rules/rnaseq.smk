@@ -1,8 +1,8 @@
 # download transcriptome annotation
 rule txome_gtf:
     input:
-        storage.ftp(
-            query="ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_43/gencode.v43.basic.annotation.gtf.gz",
+        storage(
+            "ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_43/gencode.v43.basic.annotation.gtf.gz",
         ),
     output:
         "rnaseq/ref/txome.chr{chrom}.gtf",
@@ -14,8 +14,8 @@ rule txome_gtf:
 # download repeatmasker annotation
 rule rmsk_gtf:
     input:
-        storage.http(
-            query="https://labshare.cshl.edu/shares/mhammelllab/www-data/TEtranscripts/TE_GTF/GRCh38_Ensembl_rmsk_TE.gtf.gz",
+        storage(
+            "https://labshare.cshl.edu/shares/mhammelllab/www-data/TEtranscripts/TE_GTF/GRCh38_Ensembl_rmsk_TE.gtf.gz",
         ),
     output:
         "rnaseq/ref/rmsk.chr{chrom}.gtf",
@@ -38,8 +38,8 @@ rule telocal_locInd:
 # download genome fasta
 rule genome_fa:
     input:
-        storage.ftp(
-            query="ftp://hgdownload.soe.ucsc.edu/goldenPath/hg38/chromosomes/chr{chrom}.fa.gz",
+        storage(
+            "ftp://hgdownload.soe.ucsc.edu/goldenPath/hg38/chromosomes/chr{chrom}.fa.gz",
         ),
     output:
         "rnaseq/ref/genome.chr{chrom}.fa",
@@ -51,8 +51,8 @@ rule genome_fa:
 # download transcriptome fasta
 rule txome_fa:
     input:
-        fa=storage.ftp(
-            query="ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_43/gencode.v43.transcripts.fa.gz",
+        fa=storage(
+            "ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_43/gencode.v43.transcripts.fa.gz",
         ),
         gtf=rules.txome_gtf.output,
     output:
@@ -70,11 +70,11 @@ rule txome_fa:
 
 rule reads:
     input:
-        storage.ftp(
+        storage(
             query="ftp://ftp.ebi.ac.uk/biostudies/fire/E-GEUV-/001/E-GEUV-1/Files/E-GEUV-1/processed/NA20778.4.M_120208_1.bam",
             keep_local=True,
         ),
-        storage.ftp(
+        storage(
             query="ftp://ftp.ebi.ac.uk/biostudies/fire/E-GEUV-/001/E-GEUV-1/Files/E-GEUV-1/processed/NA20778.4.M_120208_1.bam.bai",
             keep_local=True,
         ),

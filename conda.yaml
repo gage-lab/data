@@ -3,7 +3,7 @@ channels:
   - bioconda
   - nodefaults
 dependencies:
-  - snakemake>=8.0.0
+  - snakemake=8.25
   - snakefmt>=0.10.0
   - snakemake-storage-plugin-ftp
   - snakemake-storage-plugin-http
